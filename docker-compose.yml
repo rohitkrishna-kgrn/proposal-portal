@@ -1,0 +1,49 @@
+version: '3.9'
+
+services:
+  mongodb:
+    image: mongo:6
+    container_name: proposal-mongo
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: kgrn987
+      MONGO_INITDB_DATABASE: proposal_portal
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  backend:
+    build: ./backend
+    container_name: proposal-backend
+    restart: unless-stopped
+    environment:
+      PORT: 5000
+      MONGODB_URI: mongodb://root:kgrn987@mongodb:27017/proposal_portal?authSource=admin
+      JWT_SECRET: djvnsjnsconscn*^ewrfsdckj
+      SMTP_HOST: smtp.gmail.com
+      SMTP_PORT: 587
+      SMTP_USER: your@email.com
+      SMTP_PASS: your_password
+      SMTP_FROM: KGRN Proposals <your@email.com>
+      ALLOWED_ORIGINS: https://proposal.averelabs.com
+      WEBHOOK_ALLOWED_ORIGINS: https://proposal.averelabs.com
+    ports:
+      - "5002:5000"
+    depends_on:
+      - mongodb
+
+  frontend:
+    build: ./frontend
+    container_name: proposal-frontend
+    restart: unless-stopped
+    environment:
+      NEXT_PUBLIC_API_URL: https://backend-proposal.averelabs.com/api
+    ports:
+      - "3002:3000"
+    depends_on:
+      - backend
+
+volumes:
+  mongo_data:

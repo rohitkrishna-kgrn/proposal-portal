@@ -16,7 +16,7 @@ const corsOptions = {
       const Config = require('./models/Config');
       const corsConfig = await Config.findOne({ key: 'cors' });
       const allowedOrigins = corsConfig?.value?.allowedOrigins ||
-        (process.env.ALLOWED_ORIGINS || 'http://localhost:3000').split(',').map(o => o.trim());
+        (process.env.ALLOWED_ORIGINS || 'https://proposal.averelabs.com').split(',').map(o => o.trim());
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
@@ -24,7 +24,7 @@ const corsOptions = {
       }
     } catch {
       // fallback: allow env origins
-      const allowedOrigins = (process.env.ALLOWED_ORIGINS || 'http://localhost:3000').split(',').map(o => o.trim());
+      const allowedOrigins = (process.env.ALLOWED_ORIGINS || 'https://proposal.averelabs.com').split(',').map(o => o.trim());
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
