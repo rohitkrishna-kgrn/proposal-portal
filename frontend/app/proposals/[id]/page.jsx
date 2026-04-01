@@ -43,6 +43,7 @@ export default function ProposalDetailPage() {
   const [proposal, setProposal] = useState(null);
   const [loading, setLoading] = useState(true);
   const [downloading, setDownloading] = useState(false);
+  const [downloadError, setDownloadError] = useState('');
   const [emailModal, setEmailModal] = useState(false);
   const [emailForm, setEmailForm] = useState({ to: '', subject: '', body: '' });
   const [sendingEmail, setSendingEmail] = useState(false);
@@ -69,6 +70,7 @@ export default function ProposalDetailPage() {
 
   async function handleDownload() {
     setDownloading(true);
+    setDownloadError('');
     try {
       const response = await api.get(`/proposals/${id}/download`, { responseType: 'blob' });
       const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
@@ -78,7 +80,18 @@ export default function ProposalDetailPage() {
       a.click();
       window.URL.revokeObjectURL(url);
     } catch (err) {
-      alert('Failed to download PDF');
+      // When responseType is 'blob', error bodies are also blobs — read as text to get the real message
+      let message = 'PDF generation failed. Check server logs.';
+      try {
+        if (err.response?.data instanceof Blob) {
+          const text = await err.response.data.text();
+          const json = JSON.parse(text);
+          message = json.message || message;
+        } else {
+          message = err.response?.data?.message || err.message || message;
+        }
+      } catch { /* keep default message */ }
+      setDownloadError(message);
     } finally {
       setDownloading(false);
     }
@@ -157,6 +170,13 @@ export default function ProposalDetailPage() {
             </button>
           </div>
         </div>
+
+        {downloadError && (
+          <div className="mb-5 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm flex items-start gap-2">
+            <span className="font-semibold shrink-0">PDF Error:</span>
+            <span className="font-mono">{downloadError}</span>
+          </div>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Client Info */}
