@@ -58,8 +58,6 @@ function generateHTML(proposal, logoDataURI) {
     </ul>`;
 
   const css = `
-    @import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap');
-
     :root {
       --primary: #F05A28;
       --primary-light: #fff3ef;
@@ -75,7 +73,7 @@ function generateHTML(proposal, logoDataURI) {
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: #fff; font-family: 'Inter', -apple-system, 'Segoe UI', Arial, sans-serif; }
+    body { background: #fff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; }
 
     .slide {
       width: 1440px; height: 810px;
@@ -1071,32 +1069,63 @@ ${slide16}
 </html>`;
 }
 
+function resolveLogoPath() {
+  // Check env override first (set LOGO_PATH in production .env)
+  if (process.env.LOGO_PATH) return process.env.LOGO_PATH;
+  // Try common locations in order
+  const candidates = [
+    path.join(__dirname, '../../frontend/public/logo-kgrn.png'),   // dev monorepo
+    path.join(process.cwd(), 'public/logo-kgrn.png'),               // backend serves public/
+    path.join(process.cwd(), '../frontend/public/logo-kgrn.png'),   // sibling dirs
+    path.join(process.cwd(), '../public/logo-kgrn.png'),
+  ];
+  return candidates.find(p => { try { fs.accessSync(p); return true; } catch { return false; } }) || null;
+}
+
 async function generatePDF(proposal) {
-  // Load logo as base64
+  // Load logo as base64 data URI
   let logoDataURI = '';
   try {
-    const logoPath = path.join(__dirname, '../../frontend/public/logo-kgrn.png');
-    const logoBuffer = fs.readFileSync(logoPath);
-    logoDataURI = `data:image/png;base64,${logoBuffer.toString('base64')}`;
+    const logoPath = resolveLogoPath();
+    if (logoPath) {
+      logoDataURI = `data:image/png;base64,${fs.readFileSync(logoPath).toString('base64')}`;
+    }
   } catch (e) {
-    // logo not found — will render text fallback
+    // fall through to text fallback
   }
 
   const html = generateHTML(proposal, logoDataURI);
 
-  const browser = await puppeteer.launch({
+  const launchOptions = {
     headless: 'new',
-    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-gpu']
-  });
+    args: [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage',
+      '--disable-gpu',
+      '--no-zygote',
+      '--disable-extensions',
+      '--disable-background-networking',
+      '--disable-default-apps',
+    ],
+  };
+
+  // Allow overriding the Chrome/Chromium binary path via env (required on many Linux servers)
+  if (process.env.PUPPETEER_EXECUTABLE_PATH) {
+    launchOptions.executablePath = process.env.PUPPETEER_EXECUTABLE_PATH;
+  }
+
+  const browser = await puppeteer.launch(launchOptions);
   try {
     const page = await browser.newPage();
     await page.setViewport({ width: 1440, height: 810 });
-    await page.setContent(html, { waitUntil: 'networkidle0' });
+    // Use 'load' instead of 'networkidle0' — no external resources to wait for
+    await page.setContent(html, { waitUntil: 'load', timeout: 30000 });
     const pdfBuffer = await page.pdf({
       width: '1440px',
       height: '810px',
       printBackground: true,
-      margin: { top: 0, right: 0, bottom: 0, left: 0 }
+      margin: { top: 0, right: 0, bottom: 0, left: 0 },
     });
     return pdfBuffer;
   } finally {
