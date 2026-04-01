@@ -298,7 +298,7 @@ export default function NewEInvoicingProposalPage() {
                   placeholder="e.g. SAP S/4HANA, Oracle NetSuite"
                 />
               </FormField>
-              <FormField label="Transaction Type">
+              <FormField label="Transactions">
                 <input
                   type="text"
                   value={form.transaction}

@@ -185,7 +185,7 @@ export default function ProposalDetailPage() {
             <InfoRow label="Revenue Model" value={proposal.revenueModel} />
             <InfoRow label="Customer Base" value={proposal.customerBase} />
             <InfoRow label="ERP System" value={proposal.erpSystem} />
-            <InfoRow label="Transaction Type" value={proposal.transaction} />
+            <InfoRow label="Transactions" value={proposal.transaction} />
           </div>
 
           {/* Services */}
