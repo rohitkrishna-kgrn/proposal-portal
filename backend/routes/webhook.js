@@ -31,9 +31,11 @@ router.post('/einvoicing-proposal', async (req, res) => {
     };
 
     const pdfBuffer = await generatePDF(proposal);
+    const buffer = Buffer.isBuffer(pdfBuffer) ? pdfBuffer : Buffer.from(pdfBuffer);
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `attachment; filename="einvoicing-proposal-${proposal.clientName}.pdf"`);
-    res.send(pdfBuffer);
+    res.setHeader('Content-Length', buffer.length);
+    res.end(buffer);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

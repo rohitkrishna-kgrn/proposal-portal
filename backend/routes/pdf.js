@@ -12,10 +12,12 @@ router.get('/:id/download', auth, async (req, res) => {
     }
     console.log(`[PDF] Generating for proposal ${req.params.id} (${proposal.clientName})`);
     const pdfBuffer = await generatePDF(proposal);
-    console.log(`[PDF] Done — ${pdfBuffer.length} bytes`);
+    const buffer = Buffer.isBuffer(pdfBuffer) ? pdfBuffer : Buffer.from(pdfBuffer);
+    console.log(`[PDF] Done — ${buffer.length} bytes`);
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `attachment; filename="${proposal.referenceNo}-${proposal.clientName}.pdf"`);
-    res.send(pdfBuffer);
+    res.setHeader('Content-Length', buffer.length);
+    res.end(buffer);
   } catch (err) {
     console.error('[PDF] Generation failed:', err);
     res.status(500).json({ message: err.message || 'PDF generation failed' });
