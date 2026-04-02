@@ -1063,7 +1063,6 @@ ${slide11}
 ${slide12}
 ${slide13}
 ${slide14}
-${slide15}
 ${slide16}
 </body>
 </html>`;
