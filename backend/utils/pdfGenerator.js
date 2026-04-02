@@ -292,17 +292,17 @@ function generateHTML(proposal, logoDataURI) {
     <div class="content">
       <div class="grid-3 mb-2">
         <div class="card align-start">
-          <div style="font-size:30px;margin-bottom:8px;">&#128196;</div>
+          <div style="font-size:30px;margin-bottom:8px;">1</div>
           <div style="font-size:18px;font-weight:700;color:var(--primary);margin-bottom:4px;">Compliance</div>
           <div style="font-size:14px;color:var(--dark);">Regulatory alignment</div>
         </div>
         <div class="card align-start">
-          <div style="font-size:30px;margin-bottom:8px;">&#128187;</div>
+          <div style="font-size:30px;margin-bottom:8px;">2</div>
           <div style="font-size:18px;font-weight:700;color:var(--primary);margin-bottom:4px;">Implementation</div>
           <div style="font-size:14px;color:var(--dark);">System integration</div>
         </div>
         <div class="card align-start">
-          <div style="font-size:30px;margin-bottom:8px;">&#9881;&#65039;</div>
+          <div style="font-size:30px;margin-bottom:8px;">3</div>
           <div style="font-size:18px;font-weight:700;color:var(--primary);margin-bottom:4px;">Automation</div>
           <div style="font-size:14px;color:var(--dark);">Process optimization</div>
         </div>
