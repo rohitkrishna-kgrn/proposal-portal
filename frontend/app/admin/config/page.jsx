@@ -150,11 +150,11 @@ export default function AdminConfigPage() {
     { "name": "Implementation", "price": 8000 },
     { "name": "Annual Subscription", "price": 12000 }
   ],
-  "industry": "Retail",
-  "revenueModel": "B2B",
+  "industry": "B2B, B2G or B2C",
+  "revenueModel": "50M, 60M, 70M",
   "customerBase": "UAE-based",
   "erpSystem": "SAP S/4HANA",
-  "transaction": "Domestic B2B",
+  "transaction": "50M+",
   "gapAnalysisPrice": 3000,
   "implementationPrice": 8000,
   "annualSubscriptionPrice": 12000,
@@ -162,7 +162,8 @@ export default function AdminConfigPage() {
   "erpNames": ["Odoo", "SAP S/4HANA", "Oracle NetSuite"],
   "monitorPrice": 4000,
   "assurePrice": 6000,
-  "operatePrice": 9500
+  "operatePrice": 9500,
+  "includeManagedServices": true
 }`;
 
   const curlExample = `curl -X POST \\
@@ -293,6 +294,7 @@ export default function AdminConfigPage() {
                   <FieldRow label="revenueModel" value="string — B2B, B2C, or Mixed." />
                   <FieldRow label="customerBase" value="string — e.g. Single Entity, Multi Entity." />
                   <FieldRow label="erpSystem" value="string — Primary ERP system name." />
+                  <FieldRow label="transaction" value='string — Yearly invoice count, e.g. "50M+" (shown as "Yearly Invoice Count" in PDF).' />
                   <FieldRow label="gapAnalysisPrice" value="number — One-time gap analysis fee." />
                   <FieldRow label="implementationPrice" value="number — One-time implementation fee." />
                   <FieldRow label="annualSubscriptionPrice" value="number — Annual subscription price." />
@@ -301,6 +303,7 @@ export default function AdminConfigPage() {
                   <FieldRow label="assurePrice" value="number — Assure tier annual price (default 6000)." />
                   <FieldRow label="operatePrice" value="number — Operate tier annual price (default 9500)." />
                   <FieldRow label="erpNames" value="string[] — List of ERP names shown on ERP slide." />
+                  <FieldRow label="includeManagedServices" value="boolean — If false, slide 14 (Managed Services pricing) is excluded from the PDF. Defaults to true." />
                 </div>
               </div>
               <div>

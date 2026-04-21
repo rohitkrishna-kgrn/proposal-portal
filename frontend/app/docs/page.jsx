@@ -228,13 +228,14 @@ export default function DocsPage() {
             <FieldTable rows={[
               ['1 — Client Details',         '', 'Client name, entity/group name, proposal date, currency'],
               ['2 — Services',               '', 'Select Gap Analysis, Implementation, Annual Subscription with prices'],
-              ['3 — Business Context',       '', 'Industry, revenue model, customer base, ERP system, transaction type'],
+              ['3 — Business Context',       '', 'Industry, revenue model, customer base, ERP system, yearly invoice count'],
               ['4 — Pricing Details',        '', 'Subscription and overage prices (fallback if not set in services)'],
-              ['5 — Managed Services Pricing','','Monitor / Assure / Operate tier annual prices'],
+              ['5 — Managed Services Pricing','','Toggle to include/exclude. When enabled, enter Monitor / Assure / Operate tier annual prices. Toggling off removes slide 14 from the PDF.'],
               ['6 — ERP Ecosystem',          '', 'List of ERP systems shown on the ERP compatibility slide'],
             ]} />
 
             <Callout type="info">The <strong>currency</strong> field in Section 1 controls the currency symbol shown throughout the entire form and in the generated PDF. Changing it updates all price labels instantly.</Callout>
+            <Callout type="info">The <strong>Managed Services toggle</strong> in Section 5 controls whether slide 14 (the managed services pricing table) is included in the generated PDF. When toggled off, the pricing inputs are hidden and the PDF renders as 15 slides instead of 16.</Callout>
 
             <H3>Services</H3>
             <p>Tick a service to include it. Each checked service shows a price input. Unchecked services are excluded from the proposal PDF's pricing slides.</p>
@@ -256,7 +257,7 @@ export default function DocsPage() {
               ['Slide 1',  'Cover',                   'Client name, entity, date, KGRN logo'],
               ['Slide 2',  'Active Proposal',         'Service overview — Compliance, Implementation, Automation'],
               ['Slide 3',  'Executive Summary',       'Regulatory mandate, investment table, recommendation'],
-              ['Slide 4',  'Business Context',        'Client industry, revenue model, ERP system, challenges'],
+              ['Slide 4',  'Business Context',        'Client industry, revenue model, ERP system, yearly invoice count, challenges'],
               ['Slide 5',  'How eInvoicing Works',    'End-to-end flow diagram: ERP → KGRN → Peppol → FTA'],
               ['Slide 6',  'Implementation Approach', '4-phase plan: Gap Assessment → Setup → Testing → Go-Live'],
               ['Slide 7',  'Roles & Responsibilities','Client, KGRN, and Platform ownership model'],
@@ -266,12 +267,13 @@ export default function DocsPage() {
               ['Slide 11', 'ERP Flexibility',         'Supported ERP ecosystem, integration methods'],
               ['Slide 12', 'Compliance Assurance',    'Regulatory assurance, risk mitigation, governance'],
               ['Slide 13', 'Managed Services Model',  'Monitor / Assure / Operate tier descriptions'],
-              ['Slide 14', 'Commercial Options',      'Managed services pricing table with tier comparison'],
-              ['Slide 15', 'Immediate Next Steps',    'Action items + contact info'],
-              ['Slide 16', 'Closing',                 'Recommended way forward, contact details'],
+              ['Slide 14', 'Commercial Options',      'Managed services pricing table with tier comparison — only included when Managed Services toggle is on'],
+              ['Slide 15', 'Immediate Next Steps',    'Action items + contact info (slide 14 when managed services is off)'],
+              ['Slide 16', 'Closing',                 'Recommended way forward, contact details (slide 15 when managed services is off)'],
             ]} />
 
             <Callout type="info">PDF generation requires the backend server to have Puppeteer (headless Chrome) available. On Linux servers, ensure the <code className="font-mono text-xs">--no-sandbox</code> flag is supported.</Callout>
+            <Callout type="success">When <strong>Managed Services</strong> is toggled off, the PDF is 15 slides and page numbers automatically adjust. No manual configuration needed.</Callout>
 
             <H3>Logo</H3>
             <p>The PDF uses the image at <code className="bg-gray-100 px-1.5 py-0.5 rounded font-mono text-xs">frontend/public/logo-kgrn.png</code>. Replace this file to update the logo across all generated PDFs. If the file is missing, a text fallback is used.</p>
@@ -319,11 +321,11 @@ Origin: https://yourapp.com  // must match WEBHOOK_ALLOWED_ORIGINS`} lang="http"
     { "name": "Gap Analysis", "price": 3000 },
     { "name": "Implementation", "price": 8000 }
   ],
-  "industry": "Retail",
-  "revenueModel": "B2B",
+  "industry": "B2B, B2G or B2C",
+  "revenueModel": "50M, 60M, 70M",
   "customerBase": "UAE-based",
   "erpSystem": "SAP S/4HANA",
-  "transaction": "Domestic B2B",
+  "transaction": "50M+",
   "gapAnalysisPrice": 3000,
   "implementationPrice": 8000,
   "annualSubscriptionPrice": 12000,
@@ -331,6 +333,7 @@ Origin: https://yourapp.com  // must match WEBHOOK_ALLOWED_ORIGINS`} lang="http"
   "monitorPrice": 4000,
   "assurePrice": 6000,
   "operatePrice": 9500,
+  "includeManagedServices": true,
   "erpNames": ["Odoo", "SAP", "Oracle NetSuite"]
 }`} lang="json" />
 
