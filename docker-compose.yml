@@ -15,7 +15,9 @@ services:
       - mongo_data:/data/db
 
   backend:
-    build: ./backend
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
     container_name: proposal-backend
     restart: unless-stopped
     environment:

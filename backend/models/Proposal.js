@@ -44,6 +44,9 @@ const proposalSchema = new mongoose.Schema({
   // Currency
   currency: { type: String, enum: ['USD', 'AED', 'EUR'], default: 'USD' },
 
+  // Slide 14 toggle
+  includeManagedServices: { type: Boolean, default: true },
+
   pdfPath: String,
   emailSentAt: Date,
   emailSentTo: String

@@ -24,8 +24,14 @@ function generateHTML(proposal, logoDataURI) {
     gapAnalysisPrice, implementationPrice, annualSubscriptionPrice, overagePrice,
     currency = 'USD',
     erpNames = ['Odoo','Oracle NetSuite','SAP S/4HANA','Microsoft Dynamics 365','Sage','QuickBooks','Xero','Zoho Books','Epicor','Infor','JD Edwards','Workday','Acumatica','SYSPRO','Priority ERP'],
-    monitorPrice = 4000, assurePrice = 6000, operatePrice = 9500
+    monitorPrice = 4000, assurePrice = 6000, operatePrice = 9500,
+    includeManagedServices = true
   } = proposal;
+
+  const showSlide14 = includeManagedServices !== false;
+  const totalPages  = showSlide14 ? 16 : 15;
+  // Slides after 14 shift down by 1 when slide14 is excluded
+  const pg = (n) => (showSlide14 || n <= 14) ? n : n - 1;
 
   const cur = currency || 'USD';
   const fc = (v) => formatCurrency(v, cur);
@@ -406,7 +412,7 @@ function generateHTML(proposal, logoDataURI) {
               `<strong>Revenue Model:</strong> ${revenueModel || 'N/A'}`,
               `<strong>Customer Base:</strong> ${customerBase || 'N/A'}`,
               `<strong>ERP System:</strong> ${erpSystem || 'N/A'}`,
-              `<strong>Transaction:</strong> ${transaction || 'N/A'}`
+              `<strong>Yearly Invoice Count:</strong> ${transaction || 'N/A'}`
             ])}
           </div>
           <div class="card" style="color:#fff;border-top-color:var(--primary);">
@@ -930,7 +936,7 @@ function generateHTML(proposal, logoDataURI) {
         </div>
       </div>
     </div>
-    ${foot(14)}
+    ${foot(14, totalPages)}
   </section>`;
 
   /* ══════════════════════════════════════════════
@@ -980,6 +986,7 @@ function generateHTML(proposal, logoDataURI) {
         <div style="font-size:11px;color:var(--gray);">KGRN Chartered Accountants LLC &nbsp;|&nbsp; www.kgrnaudit.com</div>
       </div>
     </div>
+    ${foot(pg(15), totalPages)}
   </section>`;
 
   /* ══════════════════════════════════════════════
@@ -1039,6 +1046,7 @@ function generateHTML(proposal, logoDataURI) {
         <div style="font-size:12px;color:var(--primary);">Your Trusted Partner</div>
       </div>
     </div>
+    ${foot(pg(16), totalPages)}
   </section>`;
 
   return `<!DOCTYPE html>
@@ -1062,21 +1070,21 @@ ${slide10}
 ${slide11}
 ${slide12}
 ${slide13}
-${slide14}
+${showSlide14 ? slide14 : ''}
+${slide15}
 ${slide16}
 </body>
 </html>`;
 }
 
 function resolveLogoPath() {
-  // Check env override first (set LOGO_PATH in production .env)
   if (process.env.LOGO_PATH) return process.env.LOGO_PATH;
-  // Try common locations in order
   const candidates = [
+    path.join(__dirname, '../assets/logo-kgrn.png'),                // Docker: copied into backend/assets
     path.join(__dirname, '../../frontend/public/logo-kgrn.png'),   // dev monorepo
-    path.join(process.cwd(), 'public/logo-kgrn.png'),               // backend serves public/
-    path.join(process.cwd(), '../frontend/public/logo-kgrn.png'),   // sibling dirs
-    path.join(process.cwd(), '../public/logo-kgrn.png'),
+    path.join(process.cwd(), 'assets/logo-kgrn.png'),
+    path.join(process.cwd(), 'public/logo-kgrn.png'),
+    path.join(process.cwd(), '../frontend/public/logo-kgrn.png'),
   ];
   return candidates.find(p => { try { fs.accessSync(p); return true; } catch { return false; } }) || null;
 }

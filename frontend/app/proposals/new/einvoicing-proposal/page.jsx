@@ -20,7 +20,7 @@ const SERVICE_DEFINITIONS = [
 function SectionHeader({ number, title, subtitle }) {
   return (
     <div className="flex items-start gap-3 mb-5">
-      <div className="w-7 h-7 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0 mt-0.5" style={{ background: '#F15C22' }}>
+      <div className="w-7 h-7 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0 mt-0.5" style={{ background: '#F15C22' }}>
         {number}
       </div>
       <div>
@@ -66,6 +66,7 @@ export default function NewEInvoicingProposalPage() {
     assurePrice: 6000,
     operatePrice: 9500,
     erpNames: [...DEFAULT_ERP_NAMES],
+    includeManagedServices: false,
   });
 
   const [serviceSelections, setServiceSelections] = useState({
@@ -139,6 +140,7 @@ export default function NewEInvoicingProposalPage() {
         assurePrice: parseFloat(form.assurePrice) || 6000,
         operatePrice: parseFloat(form.operatePrice) || 9500,
         currency: form.currency,
+        includeManagedServices: form.includeManagedServices,
         status: 'active',
       };
 
@@ -268,7 +270,7 @@ export default function NewEInvoicingProposalPage() {
                   value={form.industry}
                   onChange={e => setForm({ ...form, industry: e.target.value })}
                   className={inputClass}
-                  placeholder="e.g. Retail, Manufacturing, Services"
+                  placeholder="e.g. B2B, B2G or B2C"
                 />
               </FormField>
               <FormField label="Revenue Model">
@@ -277,7 +279,7 @@ export default function NewEInvoicingProposalPage() {
                   value={form.revenueModel}
                   onChange={e => setForm({ ...form, revenueModel: e.target.value })}
                   className={inputClass}
-                  placeholder="e.g. B2B, B2C, Mixed"
+                  placeholder="e.g. 50M, 60M, 70M..."
                 />
               </FormField>
               <FormField label="Customer Base">
@@ -298,13 +300,13 @@ export default function NewEInvoicingProposalPage() {
                   placeholder="e.g. SAP S/4HANA, Oracle NetSuite"
                 />
               </FormField>
-              <FormField label="Transactions">
+              <FormField label="Yearly Invoice Count">
                 <input
                   type="text"
                   value={form.transaction}
                   onChange={e => setForm({ ...form, transaction: e.target.value })}
                   className={inputClass}
-                  placeholder="e.g. 50M, 60M"
+                  placeholder="e.g. 50M, 60M, 70M+"
                 />
               </FormField>
             </div>
@@ -341,39 +343,68 @@ export default function NewEInvoicingProposalPage() {
 
           {/* Section 5: Managed Services Pricing */}
           <div className="bg-white rounded-xl border border-gray-200 p-6">
-            <SectionHeader number="5" title="Managed Services Pricing" subtitle="Pricing for Monitor, Assure, and Operate tiers (slide 13)" />
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <FormField label={`Monitor — Annual Price (${form.currency})`}>
-                <input
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  value={form.monitorPrice}
-                  onChange={e => setForm({ ...form, monitorPrice: e.target.value })}
-                  className={inputClass}
+            <div className="flex items-start justify-between gap-4 mb-5">
+              <div className="flex items-start gap-3">
+                <div className="w-7 h-7 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0 mt-0.5" style={{ background: '#F15C22' }}>5</div>
+                <div>
+                  <h2 className="text-base font-bold text-gray-900">Managed Services Pricing</h2>
+                  <p className="text-sm text-gray-500 mt-0.5">Include Monitor, Assure &amp; Operate pricing slide in PDF</p>
+                </div>
+              </div>
+              {/* Toggle */}
+              <button
+                type="button"
+                onClick={() => setForm(prev => ({ ...prev, includeManagedServices: !prev.includeManagedServices }))}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none shrink-0 mt-0.5 ${form.includeManagedServices ? '' : 'bg-gray-200'}`}
+                style={form.includeManagedServices ? { background: '#F15C22' } : {}}
+                aria-label="Toggle managed services pricing"
+              >
+                <span
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition-transform ${form.includeManagedServices ? 'translate-x-6' : 'translate-x-1'}`}
                 />
-              </FormField>
-              <FormField label={`Assure — Annual Price (${form.currency})`}>
-                <input
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  value={form.assurePrice}
-                  onChange={e => setForm({ ...form, assurePrice: e.target.value })}
-                  className={inputClass}
-                />
-              </FormField>
-              <FormField label={`Operate — Annual Price (${form.currency})`}>
-                <input
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  value={form.operatePrice}
-                  onChange={e => setForm({ ...form, operatePrice: e.target.value })}
-                  className={inputClass}
-                />
-              </FormField>
+              </button>
             </div>
+
+            {form.includeManagedServices && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <FormField label={`Monitor — Annual Price (${form.currency})`}>
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value={form.monitorPrice}
+                    onChange={e => setForm({ ...form, monitorPrice: e.target.value })}
+                    className={inputClass}
+                  />
+                </FormField>
+                <FormField label={`Assure — Annual Price (${form.currency})`}>
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value={form.assurePrice}
+                    onChange={e => setForm({ ...form, assurePrice: e.target.value })}
+                    className={inputClass}
+                  />
+                </FormField>
+                <FormField label={`Operate — Annual Price (${form.currency})`}>
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value={form.operatePrice}
+                    onChange={e => setForm({ ...form, operatePrice: e.target.value })}
+                    className={inputClass}
+                  />
+                </FormField>
+              </div>
+            )}
+
+            {!form.includeManagedServices && (
+              <div className="flex items-center gap-2 py-3 px-4 bg-gray-50 rounded-lg border border-dashed border-gray-300">
+                <span className="text-sm text-gray-400">Managed services pricing slide (slide 14) will be excluded from the PDF.</span>
+              </div>
+            )}
           </div>
 
           {/* Section 6: ERP Ecosystem */}
