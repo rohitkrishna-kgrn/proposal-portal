@@ -1041,7 +1041,7 @@ function generateHTML(proposal, logoDataURI) {
         <div style="font-size:16px;font-weight:700;color:var(--primary);">Initiate within 2–3 weeks to ensure a smooth and structured transition</div>
       </div>
       <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border-top:2px solid var(--primary);padding-top:12px;margin-top:12px;">
-        <div style="font-size:18px;font-weight:700;color:var(--primary);">RaviRaj@kgrnaudit.com &nbsp;|&nbsp; +971 4 123 4567</div>
+        <div style="font-size:18px;font-weight:700;color:var(--primary);">raviraj@kgrnaudit.com &nbsp;|&nbsp; +971 4 123 4567</div>
         <div style="font-size:14px;font-weight:600;color:var(--dark);margin-top:2px;">KGRN Chartered Accountants LLC</div>
         <div style="font-size:12px;color:var(--primary);">Your Trusted Partner</div>
       </div>
@@ -1071,7 +1071,6 @@ ${slide11}
 ${slide12}
 ${slide13}
 ${showSlide14 ? slide14 : ''}
-${slide15}
 ${slide16}
 </body>
 </html>`;

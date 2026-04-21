@@ -306,7 +306,7 @@ export default function NewEInvoicingProposalPage() {
                   value={form.transaction}
                   onChange={e => setForm({ ...form, transaction: e.target.value })}
                   className={inputClass}
-                  placeholder="e.g. 50M, 60M, 70M+"
+                  placeholder="e.g. 15000"
                 />
               </FormField>
             </div>
